@@ -1,5 +1,18 @@
 from django.db import models
 
+
+class Department(models.Model):
+    name = models.CharField(max_length=200, unique=True)
+    description = models.TextField(blank=True)
+    head_teacher = models.ForeignKey(
+        'Teacher', on_delete=models.SET_NULL,
+        null=True, blank=True, related_name='headed_department'
+    )
+
+    def __str__(self):
+        return self.name
+
+
 class Teacher(models.Model):
     teacher_id = models.CharField(max_length=50, unique=True)
     first_name = models.CharField(max_length=100)
@@ -19,6 +32,10 @@ class Teacher(models.Model):
     zip_code = models.CharField(max_length=20)
     country = models.CharField(max_length=100)
     image = models.ImageField(upload_to='teachers/', blank=True, null=True)
+    department = models.ForeignKey(
+        Department, on_delete=models.SET_NULL,
+        null=True, blank=True, related_name='teachers'
+    )
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.teacher_id})"

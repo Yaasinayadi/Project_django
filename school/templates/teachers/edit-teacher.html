@@ -104,6 +104,17 @@
                                         {% endif %}
                                     </div>
                                 </div>
+                                <div class="col-12 col-sm-6">
+                                    <div class="form-group">
+                                        <label>Department</label>
+                                        <select class="form-control" name="department">
+                                            <option value="">Select Department</option>
+                                            {% for dept in departments %}
+                                            <option value="{{ dept.pk }}" {% if teacher.department and teacher.department.pk == dept.pk %}selected{% endif %}>{{ dept.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
 
                                 <div class="col-12">
                                     <h5 class="form-title"><span>Login Details</span></h5>

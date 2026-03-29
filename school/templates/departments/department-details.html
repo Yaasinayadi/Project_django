@@ -1,0 +1,84 @@
+{% extends 'Home/base.html' %}
+{% load static %}
+{% block body %}
+
+<div class="page-wrapper">
+    <div class="content container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h3 class="page-title">Department Details</h3>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'department_list' %}">Departments</a></li>
+                        <li class="breadcrumb-item active">Department Details</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="about-info">
+                            <h4>About {{ department.name }}</h4>
+                            <div class="media mt-3">
+                                <ul>
+                                    <li>
+                                        <span class="title-span">Name: </span>
+                                        <span class="info-span">{{ department.name }}</span>
+                                    </li>
+                                    <li>
+                                        <span class="title-span">Head of Department: </span>
+                                        <span class="info-span">{% if department.head_teacher %}{{ department.head_teacher.first_name }} {{ department.head_teacher.last_name }}{% else %}Not Assigned{% endif %}</span>
+                                    </li>
+                                    <li>
+                                        <span class="title-span">Description: </span>
+                                        <span class="info-span">{{ department.description }}</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-4">
+                    <div class="col-sm-12">
+                        <h4 class="mb-3">Teachers in this Department</h4>
+                        <div class="table-responsive">
+                            <table class="table table-hover table-center mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Gender</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for teacher in department.teachers.all %}
+                                    <tr>
+                                        <td>{{ teacher.teacher_id }}</td>
+                                        <td>
+                                            <a href="{% url 'view_teacher' teacher.teacher_id %}">{{ teacher.first_name }} {{ teacher.last_name }}</a>
+                                        </td>
+                                        <td>{{ teacher.gender }}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="3" class="text-center">No teachers assigned to this department yet.</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{%static 'assets/js/jquery-3.6.0.min.js' %}"></script>
+<script src="{%static 'assets/js/popper.min.js' %}"></script>
+<script src="{%static 'assets/plugins/bootstrap/js/bootstrap.min.js' %}"></script>
+<script src="{%static 'assets/plugins/slimscroll/jquery.slimscroll.min.js' %}"></script>
+<script src="{%static 'assets/js/script.js' %}"></script>
+{% endblock %}
