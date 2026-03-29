@@ -39,3 +39,19 @@ class Teacher(models.Model):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.teacher_id})"
+
+
+class Subject(models.Model):
+    name = models.CharField(max_length=200)
+    code = models.CharField(max_length=50, unique=True)
+    department = models.ForeignKey(
+        Department, on_delete=models.SET_NULL,
+        null=True, blank=True, related_name='subjects'
+    )
+    teacher = models.ForeignKey(
+        Teacher, on_delete=models.SET_NULL,
+        null=True, blank=True, related_name='subjects'
+    )
+
+    def __str__(self):
+        return f"{self.name} ({self.code})"

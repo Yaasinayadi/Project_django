@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Teacher, Department
+from .models import Teacher, Department, Subject
 from django.contrib import messages
 
 
@@ -150,3 +150,70 @@ def delete_department(request, pk):
     department.delete()
     messages.success(request, 'Department deleted successfully')
     return redirect('department_list')
+
+
+def subject_list(request):
+    subjects = Subject.objects.all()
+    return render(request, 'subjects/subjects.html', {'subjects': subjects})
+
+
+def add_subject(request):
+    departments = Department.objects.all()
+    teachers = Teacher.objects.all()
+    if request.method == 'POST':
+        department_id = request.POST.get('department')
+        teacher_id = request.POST.get('teacher')
+        department = None
+        teacher = None
+        if department_id:
+            department = get_object_or_404(Department, pk=department_id)
+        if teacher_id:
+            teacher = get_object_or_404(Teacher, pk=teacher_id)
+
+        Subject.objects.create(
+            name=request.POST.get('name'),
+            code=request.POST.get('code'),
+            department=department,
+            teacher=teacher,
+        )
+        messages.success(request, 'Subject added successfully')
+        return redirect('subject_list')
+    return render(request, 'subjects/add-subject.html', {'departments': departments, 'teachers': teachers})
+
+
+def edit_subject(request, pk):
+    subject = get_object_or_404(Subject, pk=pk)
+    departments = Department.objects.all()
+    teachers = Teacher.objects.all()
+    if request.method == 'POST':
+        subject.name = request.POST.get('name')
+        subject.code = request.POST.get('code')
+
+        department_id = request.POST.get('department')
+        if department_id:
+            subject.department = get_object_or_404(Department, pk=department_id)
+        else:
+            subject.department = None
+
+        teacher_id = request.POST.get('teacher')
+        if teacher_id:
+            subject.teacher = get_object_or_404(Teacher, pk=teacher_id)
+        else:
+            subject.teacher = None
+
+        subject.save()
+        messages.success(request, 'Subject updated successfully')
+        return redirect('subject_list')
+    return render(request, 'subjects/edit-subject.html', {'subject': subject, 'departments': departments, 'teachers': teachers})
+
+
+def view_subject(request, pk):
+    subject = get_object_or_404(Subject, pk=pk)
+    return render(request, 'subjects/subject-details.html', {'subject': subject})
+
+
+def delete_subject(request, pk):
+    subject = get_object_or_404(Subject, pk=pk)
+    subject.delete()
+    messages.success(request, 'Subject deleted successfully')
+    return redirect('subject_list')

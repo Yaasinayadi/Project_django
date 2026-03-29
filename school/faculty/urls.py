@@ -16,4 +16,10 @@ urlpatterns = [
     path('departments/edit/<int:pk>/', views.edit_department, name='edit_department'),
     path('departments/view/<int:pk>/', views.view_department, name='view_department'),
     path('departments/delete/<int:pk>/', views.delete_department, name='delete_department'),
+
+    path('subjects/', views.subject_list, name='subject_list'),
+    path('subjects/add/', views.add_subject, name='add_subject'),
+    path('subjects/edit/<int:pk>/', views.edit_subject, name='edit_subject'),
+    path('subjects/view/<int:pk>/', views.view_subject, name='view_subject'),
+    path('subjects/delete/<int:pk>/', views.delete_subject, name='delete_subject'),
 ]

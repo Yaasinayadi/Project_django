@@ -1,0 +1,56 @@
+{% extends 'Home/base.html' %}
+{% load static %}
+{% block body %}
+
+<div class="page-wrapper">
+    <div class="content container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h3 class="page-title">Subject Details</h3>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'subject_list' %}">Subjects</a></li>
+                        <li class="breadcrumb-item active">Subject Details</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="about-info">
+                            <h4>About {{ subject.name }}</h4>
+                            <div class="media mt-3">
+                                <ul>
+                                    <li>
+                                        <span class="title-span">Name: </span>
+                                        <span class="info-span">{{ subject.name }}</span>
+                                    </li>
+                                    <li>
+                                        <span class="title-span">Code: </span>
+                                        <span class="info-span">{{ subject.code }}</span>
+                                    </li>
+                                    <li>
+                                        <span class="title-span">Department: </span>
+                                        <span class="info-span">{% if subject.department %}{{ subject.department.name }}{% else %}Not Assigned{% endif %}</span>
+                                    </li>
+                                    <li>
+                                        <span class="title-span">Teacher: </span>
+                                        <span class="info-span">{% if subject.teacher %}{{ subject.teacher.first_name }} {{ subject.teacher.last_name }}{% else %}Not Assigned{% endif %}</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{%static 'assets/js/jquery-3.6.0.min.js' %}"></script>
+<script src="{%static 'assets/js/popper.min.js' %}"></script>
+<script src="{%static 'assets/plugins/bootstrap/js/bootstrap.min.js' %}"></script>
+<script src="{%static 'assets/plugins/slimscroll/jquery.slimscroll.min.js' %}"></script>
+<script src="{%static 'assets/js/script.js' %}"></script>
+{% endblock %}
