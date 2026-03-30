@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Teacher, Department, Subject, Holiday
+from .models import Teacher, Department, Subject, Holiday, TimeTable
 from django.contrib import messages
 
 
@@ -255,3 +255,56 @@ def delete_holiday(request, pk):
     holiday.delete()
     messages.success(request, 'Holiday deleted successfully')
     return redirect('holiday_list')
+
+def time_table_list(request):
+    time_tables = TimeTable.objects.all().order_by('day_of_week', 'start_time')
+    return render(request, 'timetable/time-table.html', {'time_tables': time_tables})
+
+def add_time_table(request):
+    departments = Department.objects.all()
+    subjects = Subject.objects.all()
+    teachers = Teacher.objects.all()
+    if request.method == 'POST':
+        TimeTable.objects.create(
+            department_id=request.POST.get('department'),
+            subject_id=request.POST.get('subject'),
+            teacher_id=request.POST.get('teacher'),
+            day_of_week=request.POST.get('day_of_week'),
+            start_time=request.POST.get('start_time'),
+            end_time=request.POST.get('end_time'),
+        )
+        messages.success(request, 'Time Table entry added successfully')
+        return redirect('time_table_list')
+    return render(request, 'timetable/add-time-table.html', {
+        'departments': departments,
+        'subjects': subjects,
+        'teachers': teachers
+    })
+
+def edit_time_table(request, pk):
+    time_table = get_object_or_404(TimeTable, pk=pk)
+    departments = Department.objects.all()
+    subjects = Subject.objects.all()
+    teachers = Teacher.objects.all()
+    if request.method == 'POST':
+        time_table.department_id = request.POST.get('department')
+        time_table.subject_id = request.POST.get('subject')
+        time_table.teacher_id = request.POST.get('teacher')
+        time_table.day_of_week = request.POST.get('day_of_week')
+        time_table.start_time = request.POST.get('start_time')
+        time_table.end_time = request.POST.get('end_time')
+        time_table.save()
+        messages.success(request, 'Time Table entry updated successfully')
+        return redirect('time_table_list')
+    return render(request, 'timetable/edit-time-table.html', {
+        'time_table': time_table,
+        'departments': departments,
+        'subjects': subjects,
+        'teachers': teachers
+    })
+
+def delete_time_table(request, pk):
+    time_table = get_object_or_404(TimeTable, pk=pk)
+    time_table.delete()
+    messages.success(request, 'Time Table entry deleted successfully')
+    return redirect('time_table_list')

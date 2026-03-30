@@ -27,4 +27,9 @@ urlpatterns = [
     path('holidays/add/', views.add_holiday, name='add_holiday'),
     path('holidays/edit/<int:pk>/', views.edit_holiday, name='edit_holiday'),
     path('holidays/delete/<int:pk>/', views.delete_holiday, name='delete_holiday'),
+
+    path('time-table/', views.time_table_list, name='time_table_list'),
+    path('time-table/add/', views.add_time_table, name='add_time_table'),
+    path('time-table/edit/<int:pk>/', views.edit_time_table, name='edit_time_table'),
+    path('time-table/delete/<int:pk>/', views.delete_time_table, name='delete_time_table'),
 ]
