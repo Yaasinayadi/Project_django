@@ -22,4 +22,9 @@ urlpatterns = [
     path('subjects/edit/<int:pk>/', views.edit_subject, name='edit_subject'),
     path('subjects/view/<int:pk>/', views.view_subject, name='view_subject'),
     path('subjects/delete/<int:pk>/', views.delete_subject, name='delete_subject'),
+
+    path('holidays/', views.holiday_list, name='holiday_list'),
+    path('holidays/add/', views.add_holiday, name='add_holiday'),
+    path('holidays/edit/<int:pk>/', views.edit_holiday, name='edit_holiday'),
+    path('holidays/delete/<int:pk>/', views.delete_holiday, name='delete_holiday'),
 ]

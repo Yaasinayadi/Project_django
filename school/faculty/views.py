@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Teacher, Department, Subject
+from .models import Teacher, Department, Subject, Holiday
 from django.contrib import messages
 
 
@@ -217,3 +217,41 @@ def delete_subject(request, pk):
     subject.delete()
     messages.success(request, 'Subject deleted successfully')
     return redirect('subject_list')
+
+
+def holiday_list(request):
+    holidays = Holiday.objects.all()
+    return render(request, 'holidays/holidays.html', {'holidays': holidays})
+
+
+def add_holiday(request):
+    if request.method == 'POST':
+        Holiday.objects.create(
+            name=request.POST.get('name'),
+            type=request.POST.get('type'),
+            start_date=request.POST.get('start_date'),
+            end_date=request.POST.get('end_date'),
+        )
+        messages.success(request, 'Holiday added successfully')
+        return redirect('holiday_list')
+    return render(request, 'holidays/add-holiday.html')
+
+
+def edit_holiday(request, pk):
+    holiday = get_object_or_404(Holiday, pk=pk)
+    if request.method == 'POST':
+        holiday.name = request.POST.get('name')
+        holiday.type = request.POST.get('type')
+        holiday.start_date = request.POST.get('start_date')
+        holiday.end_date = request.POST.get('end_date')
+        holiday.save()
+        messages.success(request, 'Holiday updated successfully')
+        return redirect('holiday_list')
+    return render(request, 'holidays/edit-holiday.html', {'holiday': holiday})
+
+
+def delete_holiday(request, pk):
+    holiday = get_object_or_404(Holiday, pk=pk)
+    holiday.delete()
+    messages.success(request, 'Holiday deleted successfully')
+    return redirect('holiday_list')

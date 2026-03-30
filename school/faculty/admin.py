@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Teacher, Department, Subject
+from .models import Teacher, Department, Subject, Holiday
 
 
 @admin.register(Teacher)
@@ -18,3 +18,9 @@ class DepartmentAdmin(admin.ModelAdmin):
 class SubjectAdmin(admin.ModelAdmin):
     list_display = ['name', 'code', 'department', 'teacher']
     search_fields = ['name', 'code']
+
+
+@admin.register(Holiday)
+class HolidayAdmin(admin.ModelAdmin):
+    list_display = ['name', 'type', 'start_date', 'end_date']
+    search_fields = ['name', 'type']
