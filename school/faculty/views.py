@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Teacher, Department, Subject, Holiday, TimeTable
+from .models import Teacher, Department, Subject, Holiday, TimeTable, Exam, ExamResult
+from student.models import Student
 from django.contrib import messages
 
 
@@ -308,3 +309,78 @@ def delete_time_table(request, pk):
     time_table.delete()
     messages.success(request, 'Time Table entry deleted successfully')
     return redirect('time_table_list')
+
+def exam_list(request):
+    exams = Exam.objects.all().order_by('-exam_date')
+    return render(request, 'exams/exams.html', {'exams': exams})
+
+def add_exam(request):
+    subjects = Subject.objects.all()
+    if request.method == 'POST':
+        Exam.objects.create(
+            name=request.POST.get('name'),
+            subject_id=request.POST.get('subject'),
+            exam_date=request.POST.get('exam_date'),
+            start_time=request.POST.get('start_time'),
+            end_time=request.POST.get('end_time'),
+            total_marks=request.POST.get('total_marks'),
+        )
+        messages.success(request, 'Exam scheduled successfully')
+        return redirect('exam_list')
+    return render(request, 'exams/add-exam.html', {'subjects': subjects})
+
+def edit_exam(request, pk):
+    exam = get_object_or_404(Exam, pk=pk)
+    subjects = Subject.objects.all()
+    if request.method == 'POST':
+        exam.name = request.POST.get('name')
+        exam.subject_id = request.POST.get('subject')
+        exam.exam_date = request.POST.get('exam_date')
+        exam.start_time = request.POST.get('start_time')
+        exam.end_time = request.POST.get('end_time')
+        exam.total_marks = request.POST.get('total_marks')
+        exam.save()
+        messages.success(request, 'Exam updated successfully')
+        return redirect('exam_list')
+    return render(request, 'exams/edit-exam.html', {'exam': exam, 'subjects': subjects})
+
+def delete_exam(request, pk):
+    exam = get_object_or_404(Exam, pk=pk)
+    exam.delete()
+    messages.success(request, 'Exam deleted successfully')
+    return redirect('exam_list')
+
+def exam_results(request, pk):
+    exam = get_object_or_404(Exam, pk=pk)
+    students = Student.objects.all()
+    
+    if request.method == 'POST':
+        # the form will submit a dictionary of student IDs to their marks
+        student_id = request.POST.get('student_id')
+        marks = request.POST.get('marks_obtained')
+        comments = request.POST.get('comments', '')
+        
+        if student_id and marks:
+            student = get_object_or_404(Student, student_id=student_id)
+            result, created = ExamResult.objects.get_or_create(
+                exam=exam, student=student,
+                defaults={'marks_obtained': marks, 'comments': comments}
+            )
+            if not created:
+                result.marks_obtained = marks
+                result.comments = comments
+                result.save()
+            messages.success(request, f'Result updated for {student.first_name}')
+            return redirect('exam_results', pk=exam.pk)
+
+    results = ExamResult.objects.filter(exam=exam).select_related('student')
+    
+    # create a dictionary of existing results for the template
+    results_dict = {str(res.student.student_id): res for res in results}
+    
+    context = {
+        'exam': exam,
+        'students': students,
+        'results_dict': results_dict
+    }
+    return render(request, 'exams/exam-results.html', context)

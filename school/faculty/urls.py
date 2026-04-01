@@ -32,4 +32,10 @@ urlpatterns = [
     path('time-table/add/', views.add_time_table, name='add_time_table'),
     path('time-table/edit/<int:pk>/', views.edit_time_table, name='edit_time_table'),
     path('time-table/delete/<int:pk>/', views.delete_time_table, name='delete_time_table'),
+
+    path('exams/', views.exam_list, name='exam_list'),
+    path('exams/add/', views.add_exam, name='add_exam'),
+    path('exams/edit/<int:pk>/', views.edit_exam, name='edit_exam'),
+    path('exams/delete/<int:pk>/', views.delete_exam, name='delete_exam'),
+    path('exams/<int:pk>/results/', views.exam_results, name='exam_results'),
 ]

@@ -1,0 +1,101 @@
+{% extends 'Home/base.html' %}
+{% load static %}
+{% block body %}
+
+<div class="page-wrapper">
+    <div class="content container-fluid">
+        <div class="page-header">
+            <div class="row align-items-center">
+                <div class="col">
+                    <h3 class="page-title">Exam Results: {{ exam.name }}</h3>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'exam_list' %}">Exam List</a></li>
+                        <li class="breadcrumb-item active">Results</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-center mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Student ID</th>
+                                        <th>Name</th>
+                                        <th>Marks Obtained (out of {{ exam.total_marks }})</th>
+                                        <th>Comments</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for student in students %}
+                                    <tr>
+                                        <td>{{ student.student_id }}</td>
+                                        <td>{{ student.first_name }} {{ student.last_name }}</td>
+
+                                        <form method="POST">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="student_id" value="{{ student.student_id }}">
+
+                                            <td>
+                                                {% for key, val in results_dict.items %}
+                                                {% if key == student.student_id %}
+                                                <input type="number" name="marks_obtained" class="form-control"
+                                                    value="{{ val.marks_obtained }}" max="{{ exam.total_marks }}"
+                                                    required>
+                                                {% endif %}
+                                                {% endfor %}
+
+                                                {# If no result found in the dict loop, display empty input #}
+                                                {% if student.student_id not in results_dict.keys %}
+                                                <input type="number" name="marks_obtained" class="form-control"
+                                                    max="{{ exam.total_marks }}" required>
+                                                {% endif %}
+                                            </td>
+
+                                            <td>
+                                                {% for key, val in results_dict.items %}
+                                                {% if key == student.student_id %}
+                                                <input type="text" name="comments" class="form-control"
+                                                    value="{{ val.comments }}">
+                                                {% endif %}
+                                                {% endfor %}
+
+                                                {% if student.student_id not in results_dict.keys %}
+                                                <input type="text" name="comments" class="form-control">
+                                                {% endif %}
+                                            </td>
+
+                                            <td>
+                                                <button type="submit" class="btn btn-primary btn-sm">Save</button>
+                                            </td>
+                                        </form>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="5" class="text-center">No students found in the system.</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+</div>
+<script src="{%static 'assets/js/jquery-3.6.0.min.js' %}"></script>
+<script src="{%static 'assets/js/popper.min.js' %}"></script>
+<script src="{%static 'assets/plugins/bootstrap/js/bootstrap.min.js' %}"></script>
+<script src="{%static 'assets/js/script.js' %}"></script>
+</body>
+
+</html>
+{% endblock %}
