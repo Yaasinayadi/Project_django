@@ -56,7 +56,6 @@
                            class="avatar-img rounded-circle">
                      </div>
                      <div class="user-text">
-                        <!-- CHANGEMENT : Affiche le vrai nom d'utilisateur et son rôle -->
                         <h6>{{ request.user.first_name }} {{ request.user.last_name }}</h6>
                         {% if request.user.is_admin %}
                            <p class="text-muted mb-0">Administrateur</p>
@@ -80,19 +79,16 @@
                   <li class="menu-title">
                      <span>Main Menu</span>
                   </li>
-                  <!-- Section Dashboard : tout le monde y a accès -->
                   <li>
                      <a href="{% url 'dashboard' %}"><i class="fas fa-user-graduate"></i> <span> Dashboard</span></a>
                   </li>
 
-                  <!-- Section Étudiants : Visible par les Admins et les Enseignants -->
                   {% if request.user.is_admin or request.user.is_teacher %}
                   <li class="submenu">
                      <a href="#"><i class="fas fa-user-graduate"></i> <span> Students</span> <span
                            class="menu-arrow"></span></a>
                      <ul>
                         <li><a href="{% url 'student_list' %}">Student List</a></li>
-                        <!-- Seul l'Admin peut ajouter un étudiant -->
                         {% if request.user.is_admin %}
                            <li><a href="{% url 'add_student' %}">Student Add</a></li>
                         {% endif %}
@@ -100,18 +96,17 @@
                   </li>
                   {% endif %}
                   
-                  <!-- Section Enseignants : Visible uniquement par l'Admin -->
-                  {% if request.user.is_admin %}
                   <li class="submenu">
                      <a href="#"><i class="fas fa-chalkboard-teacher"></i> <span> Teachers</span> <span
                            class="menu-arrow"></span></a>
                      <ul>
                         <li><a href="{% url 'teacher_list' %}">Teacher List</a></li>
+                        {% if request.user.is_admin %}
                         <li><a href="{% url 'add_teacher' %}">Teacher Add</a></li>
+                        {% endif %}
                      </ul>
                   </li>
-                  
-                  <!-- Section Départements : Visible uniquement par l'Admin -->
+                  {% if request.user.is_admin %}
                   <li class="submenu">
                      <a href="#"><i class="fas fa-building"></i> <span> Departments</span> <span
                            class="menu-arrow"></span></a>
@@ -136,7 +131,6 @@
                   {% endif %}
 
                   <!-- Tout le reste de la gestion est réservé à l'Admin -->
-                  {% if request.user.is_admin %}
                   <li class="menu-title">
                      <span>Management</span>
                   </li>
@@ -148,11 +142,13 @@
                      </ul>
                   </li>
                   <li class="submenu">
-                     <a href="#"><i class="fas fa-holly-berry"></i> <span> Holiday</span> <span
-                           class="menu-arrow"></span></a>
+                     <a href="#"><i class="fas fa-holly-berry"></i> <span> Holiday</span> 
+                        <span class="menu-arrow"></span></a>
                      <ul>
                         <li><a href="{% url 'holiday_list' %}">Holiday List</a></li>
-                        <li><a href="{% url 'add_holiday' %}">Holiday Add</a></li>
+                        {% if request.user.is_admin %}
+                           <li><a href="{% url 'add_holiday' %}">Holiday Add</a></li>
+                        {% endif %}
                      </ul>
                   </li>
                   <li class="submenu">
@@ -160,7 +156,9 @@
                            class="menu-arrow"></span></a>
                      <ul>
                         <li><a href="{% url 'exam_list' %}">Exam List</a></li>
-                        <li><a href="{% url 'add_exam' %}">Add Exam</a></li>
+                        {% if request.user.is_admin %}
+                           <li><a href="{% url 'add_exam' %}">Add Exam</a></li>
+                        {% endif %}
                      </ul>
                   </li>
                   <li class="submenu">
@@ -168,10 +166,13 @@
                            class="menu-arrow"></span></a>
                      <ul>
                         <li><a href="{% url 'time_table_list' %}">Time Table List</a></li>
+                        {% if request.user.is_admin %}
                         <li><a href="{% url 'add_time_table' %}">Add Time Table</a></li>
+                        {% endif %}
+
+
                      </ul>
                   </li>
-                  {% endif %}
 
                </ul>
             </div>

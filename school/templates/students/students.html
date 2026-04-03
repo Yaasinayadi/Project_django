@@ -37,7 +37,6 @@
                                        <th>Parent Name</th>
                                        <th>Mobile Number</th>
                                        <th>Address</th>
-                                       <!-- CHANGEMENT : La colonne Action ne sera visible que par l'Admin -->
                                        {% if request.user.is_admin %}
                                           <th class="text-right">Action</th>
                                        {% endif %}
@@ -64,7 +63,6 @@
                                        <td>{{ student.parent.father_name }}</td>
                                        <td>{{ student.mobile_number }}</td>
                                        <td>{{ student.parent.present_address }}</td>
-                                       <!-- CHANGEMENT : Les boutons Modifier/Supprimer ne seront visibles que par l'Admin -->
                                        {% if request.user.is_admin %}
                                        <td class="text-right">
                                           <div class="actions">
@@ -95,5 +93,4 @@
             </footer>
          </div>
       </div>
-      <!-- Les scripts JS restent les mêmes -->
 {% endblock %}

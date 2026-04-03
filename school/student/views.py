@@ -9,7 +9,6 @@ def student_list(request):
     if not request.user.is_admin and not request.user.is_teacher:
         messages.error(request, "Accès refusé. Vous n'avez pas l'autorisation de voir cette liste.")
         return redirect('dashboard')
-        
     students = Student.objects.all()
     return render(request, 'students/students.html', {'student_list': students})
 

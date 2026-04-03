@@ -13,10 +13,12 @@
                         <li class="breadcrumb-item active">Time Table</li>
                     </ul>
                 </div>
+                {% if request.user.is_admin %}
                 <div class="col-auto text-right float-right ml-auto">
                     <a href="#" class="btn btn-outline-primary mr-2"><i class="fas fa-download"></i> Download</a>
                     <a href="{% url 'add_time_table' %}" class="btn btn-primary"><i class="fas fa-plus"></i></a>
                 </div>
+                {% endif %}
             </div>
         </div>
         <div class="row">
@@ -33,7 +35,9 @@
                                         <th>Teacher</th>
                                         <th>Start Time</th>
                                         <th>End Time</th>
+                                        {% if request.user.is_admin %}
                                         <th class="text-right">Action</th>
+                                        {% endif %}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -43,11 +47,12 @@
                                         <td>{{ entry.department.name }}</td>
                                         <td>{{ entry.subject.name }}</td>
                                         <td>
-                                            <a href="{% url 'view_teacher' entry.teacher.teacher_id %}">{{
-                                                entry.teacher.first_name }} {{ entry.teacher.last_name }}</a>
+                                            <a href="{% url 'view_teacher' entry.teacher.teacher_id %}"> 
+                                                {{ entry.teacher.first_name }} {{ entry.teacher.last_name }}</a>
                                         </td>
                                         <td>{{ entry.start_time|time:"H:i" }}</td>
                                         <td>{{ entry.end_time|time:"H:i" }}</td>
+                                        {% if request.user.is_admin %}
                                         <td class="text-right">
                                             <div class="actions">
                                                 <a href="{% url 'edit_time_table' entry.pk %}"
@@ -64,6 +69,7 @@
                                                 </form>
                                             </div>
                                         </td>
+                                        {% endif %}
                                     </tr>
                                     {% endfor %}
                                 </tbody>

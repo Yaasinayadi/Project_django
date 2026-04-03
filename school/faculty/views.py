@@ -28,9 +28,9 @@ def teacher_dashboard(request):
 
 @login_required
 def teacher_list(request):
-    if not request.user.is_admin:
-        messages.error(request, "Accès non autorisé.")
-        return redirect('dashboard')
+    # if not request.user.is_admin:
+    #     messages.error(request, "Accès non autorisé.")
+    #     return redirect('dashboard')
     teachers = Teacher.objects.all()
     return render(request, 'teachers/teachers.html', {'teachers': teachers})
 
@@ -278,9 +278,6 @@ def delete_subject(request, pk):
 
 @login_required
 def holiday_list(request):
-    if not request.user.is_admin:
-        messages.error(request, "Accès non autorisé.")
-        return redirect('dashboard')
     holidays = Holiday.objects.all()
     return render(request, 'holidays/holidays.html', {'holidays': holidays})
 
@@ -331,9 +328,6 @@ def delete_holiday(request, pk):
 
 @login_required
 def time_table_list(request):
-    if not request.user.is_admin:
-        messages.error(request, "Accès non autorisé.")
-        return redirect('dashboard')
     time_tables = TimeTable.objects.all().order_by('day_of_week', 'start_time')
     return render(request, 'timetable/time-table.html', {'time_tables': time_tables})
 
