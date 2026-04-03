@@ -18,7 +18,7 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-body">
-                        <form method="POST" enctype="multipart/form-data">
+                        <form method="POST" action="{% url 'edit_student' student.student_id %}" enctype="multipart/form-data">
                             {% csrf_token %}
                             <div class="row">
                                 <div class="col-12">
@@ -97,7 +97,7 @@
                                     <div class="form-group">
                                         <label>Student Image</label>
                                         <input type="file" name="student_image" class="form-control">
-                                        <small>Current Image: {{ student.student_image.url }}</small>
+                                        <small>Current Image: {% if student.student_image %}{{ student.student_image.url }}{% else %}None{% endif %}</small>
                                     </div>
                                 </div>
                                 <div class="col-12">

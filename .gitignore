@@ -1,0 +1,16 @@
+*.pdf
+__pycache__/
+*.py[cod]
+*$py.class
+
+db.sqlite3
+local_settings.py
+media/
+staticfiles/
+
+venv/
+env/
+.env
+
+hon-314.pyc
+*.md
