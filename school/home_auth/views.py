@@ -45,9 +45,9 @@ def login_view(request):
             login(request, user)
             messages.success(request, 'Login successful!')
             if user.is_admin:
-                return redirect('dashboard')
+                return redirect('admin_dashboard')
             elif user.is_teacher:
-                return redirect('dashboard')
+                return redirect('teacher_dashboard')
             elif user.is_student:
                 return redirect('dashboard')
             else:

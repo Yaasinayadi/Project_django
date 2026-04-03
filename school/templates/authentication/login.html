@@ -37,9 +37,7 @@
                   {% if messages %}
                   <div class="alert alert-info">
                      {% for message in messages %}
-                        {% if forloop.last %}
                         <p>{{ message }}</p>
-                        {% endif %}
                      {% endfor %}
                   </div>
                   {% endif %}

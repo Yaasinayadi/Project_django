@@ -156,5 +156,4 @@ for i in range(6):
             comments=random.choice(["Excellent", "Bon travail", "Peut mieux faire", "Assez bien"])
         )
 
-# Update the welcome message to include the username dynamically
 print(f"✅ Base de données initialisée avec succès pour {os.getenv('USER', 'utilisateur inconnu')} !")

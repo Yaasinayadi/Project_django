@@ -5,8 +5,6 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
 def index(request):
-    if request.user.is_authenticated:
-        return redirect('dashboard')
     return render(request, 'authentication/login.html')
 
 @login_required
@@ -453,6 +451,7 @@ def exam_results(request, pk):
     students = Student.objects.all()
     
     if request.method == 'POST':
+        # the form will submit a dictionary of student IDs to their marks
         student_id = request.POST.get('student_id')
         marks = request.POST.get('marks_obtained')
         comments = request.POST.get('comments', '')
@@ -472,6 +471,7 @@ def exam_results(request, pk):
 
     results = ExamResult.objects.filter(exam=exam).select_related('student')
     
+    # create a dictionary of existing results for the template
     results_dict = {str(res.student.student_id): res for res in results}
     
     context = {
