@@ -120,7 +120,7 @@ Le projet suit l'architecture MVT (Model-View-Template) de Django :
 ## 🎥 Démonstration Vidéo
 
 Une démonstration complète du projet est disponible ici :
-[Voir la vidéo de démonstration](https://drive.google.com/drive/folders/1ZWrjEWfqHJVaHiqxvMlaQ_8CbOy_NLZV?usp=sharing)
+[Voir la vidéo de démonstration](https://drive.google.com/drive/folders/1m6cjJmZ4U1rUbysPdJynMc1bJg6Zkyj-?usp=sharing)
 
 ## 👨‍💻 Contributeurs
 
