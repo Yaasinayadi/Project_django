@@ -12,6 +12,14 @@ def dashboard(request):
     return render(request, 'students/student-dashboard.html')
 
 
+def admin_dashboard(request):
+    return render(request, 'Home/index.html')
+
+
+def teacher_dashboard(request):
+    return render(request, 'teachers/teacher-dashboard.html')
+
+
 def teacher_list(request):
     teachers = Teacher.objects.all()
     return render(request, 'teachers/teachers.html', {'teachers': teachers})
