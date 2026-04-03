@@ -4,7 +4,16 @@ import django.contrib.auth.models
 import django.contrib.auth.validators
 import django.utils.timezone
 from django.db import migrations, models
+from django.contrib.auth.decorators import user_passes_test
 
+def is_admin(user):
+    return user.is_admin
+
+def is_teacher(user):
+    return user.is_teacher
+
+def is_student(user):
+    return user.is_student
 
 class Migration(migrations.Migration):
 

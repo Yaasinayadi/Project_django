@@ -2,17 +2,23 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Teacher, Department, Subject, Holiday, TimeTable, Exam, ExamResult
 from student.models import Student
 from django.contrib import messages
-
+from django.contrib.auth.decorators import login_required
 
 def index(request):
     if request.user.is_authenticated:
         return redirect('dashboard')
     return render(request, 'authentication/login.html')
 
-
+@login_required
 def dashboard(request):
-    return render(request, 'students/student-dashboard.html')
-
+    if request.user.is_admin:
+        return render(request, 'Home/index.html') 
+    elif request.user.is_teacher:
+        return render(request, 'teachers/teacher-dashboard.html')
+    elif request.user.is_student:
+        return render(request, 'students/student-dashboard.html')
+    else:
+        return redirect('login') 
 
 def admin_dashboard(request):
     return render(request, 'Home/index.html')
@@ -22,12 +28,19 @@ def teacher_dashboard(request):
     return render(request, 'teachers/teacher-dashboard.html')
 
 
+@login_required
 def teacher_list(request):
+    if not request.user.is_admin:
+        messages.error(request, "Accès non autorisé.")
+        return redirect('dashboard')
     teachers = Teacher.objects.all()
     return render(request, 'teachers/teachers.html', {'teachers': teachers})
 
-
+@login_required
 def add_teacher(request):
+    if not request.user.is_admin:
+        messages.error(request, "Accès non autorisé.")
+        return redirect('dashboard')
     departments = Department.objects.all()
     if request.method == 'POST':
         department_id = request.POST.get('department')
@@ -60,8 +73,11 @@ def add_teacher(request):
         return redirect('teacher_list')
     return render(request, 'teachers/add-teacher.html', {'departments': departments})
 
-
+@login_required
 def edit_teacher(request, teacher_id):
+    if not request.user.is_admin:
+        messages.error(request, "Accès non autorisé.")
+        return redirect('dashboard')
     teacher = get_object_or_404(Teacher, teacher_id=teacher_id)
     departments = Department.objects.all()
     if request.method == 'POST':
@@ -96,25 +112,38 @@ def edit_teacher(request, teacher_id):
         return redirect('teacher_list')
     return render(request, 'teachers/edit-teacher.html', {'teacher': teacher, 'departments': departments})
 
-
+@login_required
 def view_teacher(request, teacher_id):
+    if not request.user.is_admin:
+        messages.error(request, "Accès non autorisé.")
+        return redirect('dashboard')
     teacher = get_object_or_404(Teacher, teacher_id=teacher_id)
     return render(request, 'teachers/teacher-details.html', {'teacher': teacher})
 
 
+@login_required
 def delete_teacher(request, teacher_id):
+    if not request.user.is_admin:
+        messages.error(request, "Accès non autorisé.")
+        return redirect('dashboard')
     teacher = get_object_or_404(Teacher, teacher_id=teacher_id)
     teacher.delete()
     messages.success(request, 'Teacher deleted successfully')
     return redirect('teacher_list')
 
-
+@login_required
 def department_list(request):
+    if not request.user.is_admin:
+        messages.error(request, "Accès non autorisé.")
+        return redirect('dashboard')
     departments = Department.objects.all()
     return render(request, 'departments/departments.html', {'departments': departments})
 
-
+@login_required
 def add_department(request):
+    if not request.user.is_admin:
+        messages.error(request, "Accès non autorisé.")
+        return redirect('dashboard')
     teachers = Teacher.objects.all()
     if request.method == 'POST':
         head_teacher_id = request.POST.get('head_teacher')
@@ -131,8 +160,11 @@ def add_department(request):
         return redirect('department_list')
     return render(request, 'departments/add-department.html', {'teachers': teachers})
 
-
+@login_required
 def edit_department(request, pk):
+    if not request.user.is_admin:
+        messages.error(request, "Accès non autorisé.")
+        return redirect('dashboard')
     department = get_object_or_404(Department, pk=pk)
     teachers = Teacher.objects.all()
     if request.method == 'POST':
@@ -150,25 +182,35 @@ def edit_department(request, pk):
         return redirect('department_list')
     return render(request, 'departments/edit-department.html', {'department': department, 'teachers': teachers})
 
-
 def view_department(request, pk):
+    
     department = get_object_or_404(Department, pk=pk)
     return render(request, 'departments/department-details.html', {'department': department})
 
 
+@login_required
 def delete_department(request, pk):
+    if not request.user.is_admin:
+        messages.error(request, "Accès non autorisé.")
+        return redirect('dashboard')
     department = get_object_or_404(Department, pk=pk)
     department.delete()
     messages.success(request, 'Department deleted successfully')
     return redirect('department_list')
 
-
+@login_required
 def subject_list(request):
+    if request.user.is_student:
+        messages.error(request, "Accès non autorisé.")
+        return redirect('dashboard')
     subjects = Subject.objects.all()
     return render(request, 'subjects/subjects.html', {'subjects': subjects})
 
-
+@login_required
 def add_subject(request):
+    if not request.user.is_admin:
+        messages.error(request, "Accès non autorisé.")
+        return redirect('dashboard')
     departments = Department.objects.all()
     teachers = Teacher.objects.all()
     if request.method == 'POST':
@@ -191,8 +233,11 @@ def add_subject(request):
         return redirect('subject_list')
     return render(request, 'subjects/add-subject.html', {'departments': departments, 'teachers': teachers})
 
-
+@login_required
 def edit_subject(request, pk):
+    if not request.user.is_admin:
+        messages.error(request, "Accès non autorisé.")
+        return redirect('dashboard')
     subject = get_object_or_404(Subject, pk=pk)
     departments = Department.objects.all()
     teachers = Teacher.objects.all()
@@ -222,20 +267,31 @@ def view_subject(request, pk):
     subject = get_object_or_404(Subject, pk=pk)
     return render(request, 'subjects/subject-details.html', {'subject': subject})
 
-
+@login_required
 def delete_subject(request, pk):
+    if not request.user.is_admin:
+        messages.error(request, "Accès non autorisé.")
+        return redirect('dashboard')
     subject = get_object_or_404(Subject, pk=pk)
     subject.delete()
     messages.success(request, 'Subject deleted successfully')
     return redirect('subject_list')
 
 
+@login_required
 def holiday_list(request):
+    if not request.user.is_admin:
+        messages.error(request, "Accès non autorisé.")
+        return redirect('dashboard')
     holidays = Holiday.objects.all()
     return render(request, 'holidays/holidays.html', {'holidays': holidays})
 
 
+@login_required
 def add_holiday(request):
+    if not request.user.is_admin:
+        messages.error(request, "Accès non autorisé.")
+        return redirect('dashboard')
     if request.method == 'POST':
         Holiday.objects.create(
             name=request.POST.get('name'),
@@ -248,7 +304,11 @@ def add_holiday(request):
     return render(request, 'holidays/add-holiday.html')
 
 
+@login_required
 def edit_holiday(request, pk):
+    if not request.user.is_admin:
+        messages.error(request, "Accès non autorisé.")
+        return redirect('dashboard')
     holiday = get_object_or_404(Holiday, pk=pk)
     if request.method == 'POST':
         holiday.name = request.POST.get('name')
@@ -261,17 +321,29 @@ def edit_holiday(request, pk):
     return render(request, 'holidays/edit-holiday.html', {'holiday': holiday})
 
 
+@login_required
 def delete_holiday(request, pk):
+    if not request.user.is_admin:
+        messages.error(request, "Accès non autorisé.")
+        return redirect('dashboard')
     holiday = get_object_or_404(Holiday, pk=pk)
     holiday.delete()
     messages.success(request, 'Holiday deleted successfully')
     return redirect('holiday_list')
 
+@login_required
 def time_table_list(request):
+    if not request.user.is_admin:
+        messages.error(request, "Accès non autorisé.")
+        return redirect('dashboard')
     time_tables = TimeTable.objects.all().order_by('day_of_week', 'start_time')
     return render(request, 'timetable/time-table.html', {'time_tables': time_tables})
 
+@login_required
 def add_time_table(request):
+    if not request.user.is_admin:
+        messages.error(request, "Accès non autorisé.")
+        return redirect('dashboard')
     departments = Department.objects.all()
     subjects = Subject.objects.all()
     teachers = Teacher.objects.all()
@@ -292,7 +364,11 @@ def add_time_table(request):
         'teachers': teachers
     })
 
+@login_required
 def edit_time_table(request, pk):
+    if not request.user.is_admin:
+        messages.error(request, "Accès non autorisé.")
+        return redirect('dashboard')
     time_table = get_object_or_404(TimeTable, pk=pk)
     departments = Department.objects.all()
     subjects = Subject.objects.all()
@@ -314,7 +390,11 @@ def edit_time_table(request, pk):
         'teachers': teachers
     })
 
+@login_required
 def delete_time_table(request, pk):
+    if not request.user.is_admin:
+        messages.error(request, "Accès non autorisé.")
+        return redirect('dashboard')
     time_table = get_object_or_404(TimeTable, pk=pk)
     time_table.delete()
     messages.success(request, 'Time Table entry deleted successfully')
@@ -324,7 +404,11 @@ def exam_list(request):
     exams = Exam.objects.all().order_by('-exam_date')
     return render(request, 'exams/exams.html', {'exams': exams})
 
+@login_required
 def add_exam(request):
+    if not request.user.is_admin:
+        messages.error(request, "Accès non autorisé.")
+        return redirect('dashboard')
     subjects = Subject.objects.all()
     if request.method == 'POST':
         Exam.objects.create(
@@ -339,7 +423,11 @@ def add_exam(request):
         return redirect('exam_list')
     return render(request, 'exams/add-exam.html', {'subjects': subjects})
 
+@login_required
 def edit_exam(request, pk):
+    if not request.user.is_admin:
+        messages.error(request, "Accès non autorisé.")
+        return redirect('dashboard')
     exam = get_object_or_404(Exam, pk=pk)
     subjects = Subject.objects.all()
     if request.method == 'POST':

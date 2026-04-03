@@ -1,4 +1,4 @@
-{% extends 'Home/base.html' %}
+{% extends 'Home/base.html' %} <!-- Assurez-vous que le nom est correct, ex: 'base.html' ou 'Home/base.html' -->
 {% load static %}
 {% block body %}
    
@@ -9,14 +9,17 @@
                      <div class="col">
                         <h3 class="page-title">Students</h3>
                         <ul class="breadcrumb">
-                           <li class="breadcrumb-item"><a href="">Dashboard</a></li>
+                           <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
                            <li class="breadcrumb-item active">Students</li>
                         </ul>
                      </div>
+                     <!-- CHANGEMENT : Ce bloc de boutons ne sera visible que par l'Admin -->
+                     {% if request.user.is_admin %}
                      <div class="col-auto text-right float-right ml-auto">
                         <a href="#" class="btn btn-outline-primary mr-2"><i class="fas fa-download"></i> Download</a>
                         <a href="{% url 'add_student' %}" class="btn btn-primary"><i class="fas fa-plus"></i></a>
                      </div>
+                     {% endif %}
                   </div>
                </div>
                <div class="row">
@@ -34,7 +37,10 @@
                                        <th>Parent Name</th>
                                        <th>Mobile Number</th>
                                        <th>Address</th>
-                                       <th class="text-right">Action</th>
+                                       <!-- CHANGEMENT : La colonne Action ne sera visible que par l'Admin -->
+                                       {% if request.user.is_admin %}
+                                          <th class="text-right">Action</th>
+                                       {% endif %}
                                     </tr>
                                  </thead>
                                  <tbody>
@@ -43,15 +49,23 @@
                                        <td>{{ student.student_id}}</td>
                                        <td>
                                           <h2 class="table-avatar">
-                                             {% comment %} <a href="{% url 'view_student' student.student_id %}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{ student.student_image ? student.student_image.url : '' }}" alt="User Image"></a> {% endcomment %}
+                                             <a href="{% url 'view_student' student.student_id %}" class="avatar avatar-sm mr-2">
+                                                 {% if student.student_image %}
+                                                     <img class="avatar-img rounded-circle" src="{{ student.student_image.url }}" alt="User Image">
+                                                 {% else %}
+                                                     <img class="avatar-img rounded-circle" src="{% static 'assets/img/profiles/avatar-01.jpg' %}" alt="User Image">
+                                                 {% endif %}
+                                             </a>
                                              <a href="{% url 'view_student' student.student_id %}">{{ student.first_name }} {{ student.last_name}}</a>
                                           </h2>
                                        </td>
                                        <td>{{ student.student_class }}</td>
                                        <td>{{ student.date_of_birth|date:"d M Y" }}</td>
-                                       <td>{{ student.parent.father_name }} / {{ student.parent.mother_name }}</td>
+                                       <td>{{ student.parent.father_name }}</td>
                                        <td>{{ student.mobile_number }}</td>
                                        <td>{{ student.parent.present_address }}</td>
+                                       <!-- CHANGEMENT : Les boutons Modifier/Supprimer ne seront visibles que par l'Admin -->
+                                       {% if request.user.is_admin %}
                                        <td class="text-right">
                                           <div class="actions">
                                              <a href="{% url 'edit_student' student.student_id %}" class="btn btn-sm bg-success-light mr-2">
@@ -65,6 +79,7 @@
                                              </form>
                                          </div>
                                        </td>
+                                       {% endif %}
                                     </tr>
                                     {% endfor %}
                                  </tbody>
@@ -80,15 +95,5 @@
             </footer>
          </div>
       </div>
-      <script src="{%static 'assets/js/jquery-3.6.0.min.js' %}"></script>
-      <script src="{%static 'assets/js/popper.min.js' %}"></script>
-      <script src="{%static 'assets/plugins/bootstrap/js/bootstrap.min.js' %}"></script>
-      <script src="{%static 'assets/plugins/slimscroll/jquery.slimscroll.min.js' %}"></script>
-      <script src="{%static 'assets/plugins/datatables/datatables.min.js' %}"></script>
-      <script src="{%static 'assets/js/script.js' %}"></script>
-   </body>
-   <!-- Mirrored from preschool.dreamguystech.com/html-template/students.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 28 Oct 2021 11:11:49 GMT -->
-</html>
-
-
+      <!-- Les scripts JS restent les mêmes -->
 {% endblock %}

@@ -1,13 +1,24 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import Student, Parent
-from django.contrib import messages 
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
-
+@login_required
 def student_list(request):
+    if not request.user.is_admin and not request.user.is_teacher:
+        messages.error(request, "Accès refusé. Vous n'avez pas l'autorisation de voir cette liste.")
+        return redirect('dashboard')
+        
     students = Student.objects.all()
     return render(request, 'students/students.html', {'student_list': students})
+
+@login_required
 def add_student(request):
+    if not request.user.is_admin:
+        messages.error(request, "Accès refusé. Seul l'administrateur peut ajouter un étudiant.")
+        return redirect('student_list')
+
     if request.method == 'POST':
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
@@ -20,7 +31,7 @@ def add_student(request):
         admission_number = request.POST.get('admission_number')
         section = request.POST.get('section')
         student_image = request.FILES.get('student_image')
-        # Récupérer les données du parent
+        
         father_name = request.POST.get('father_name')
         father_occupation = request.POST.get('father_occupation')
         father_mobile = request.POST.get('father_mobile')
@@ -62,8 +73,13 @@ def add_student(request):
         return redirect('student_list')
     else:
         return render(request, 'students/add-student.html')
-        
+
+@login_required
 def edit_student(request, student_id):
+    if not request.user.is_admin:
+        messages.error(request, "Accès refusé. Seul l'administrateur peut modifier un étudiant.")
+        return redirect('student_list')
+
     student = Student.objects.get(student_id=student_id)
     parent = student.parent
     if request.method == 'POST':
@@ -96,11 +112,21 @@ def edit_student(request, student_id):
         return redirect('student_list')
     return render(request, 'students/edit-student.html', {'student': student, 'parent': parent})
 
+@login_required
 def view_student(request, student_id):
+    if request.user.is_student:
+        messages.error(request, "Accès refusé.")
+        return redirect('dashboard')
+
     student = Student.objects.get(student_id=student_id)
     return render(request, 'students/student-details.html', {'student': student})
 
+@login_required
 def delete_student(request, student_id):
+    if not request.user.is_admin:
+        messages.error(request, "Accès refusé. Seul l'administrateur peut supprimer un étudiant.")
+        return redirect('student_list')
+
     student = Student.objects.get(student_id=student_id)
     student.delete()
     messages.success(request, 'Student deleted successfully')
